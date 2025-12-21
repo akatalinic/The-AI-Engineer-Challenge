@@ -201,3 +201,116 @@ body {
   }
 }
 
+/* API Key Modal */
+.api-key-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.api-key-modal-content {
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid #00ff00;
+  border-radius: 5px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+  animation: fadeIn 0.3s ease-in;
+}
+
+.api-key-modal-title {
+  color: #00ff00;
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #00ff00;
+  letter-spacing: 2px;
+}
+
+.api-key-modal-description {
+  color: #00cc00;
+  font-size: 12px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.api-key-input-container {
+  margin-bottom: 20px;
+}
+
+.api-key-input-label {
+  display: block;
+  color: #00ff00;
+  font-size: 12px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.api-key-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  padding: 10px;
+  outline: none;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+.api-key-input:focus {
+  border-color: #00ff88;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.api-key-input::placeholder {
+  color: #006600;
+}
+
+.api-key-button {
+  background: transparent;
+  border: 2px solid #00ff00;
+  color: #00ff00;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+.api-key-button:hover:not(:disabled) {
+  background: rgba(0, 255, 0, 0.1);
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.api-key-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.api-key-error {
+  color: #ff4444;
+  font-size: 12px;
+  margin-top: 10px;
+  text-shadow: 0 0 5px #ff4444;
+}
+
+.api-key-warning {
+  color: #ffaa00;
+  font-size: 11px;
+  margin-top: 10px;
+  line-height: 1.4;
+}
+

@@ -1,7 +1,8 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from openai import OpenAI
+from typing import Optional
 import os
 
 
@@ -15,8 +16,6 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
 class ChatRequest(BaseModel):
     message: str
 
@@ -25,12 +24,24 @@ def root():
     return {"status": "ok"}
 
 @app.post("/api/chat")
-def chat(request: ChatRequest):
-    if not os.getenv("OPENAI_API_KEY"):
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY not configured")
+async def chat(
+    request: ChatRequest,
+    x_openai_api_key: Optional[str] = Header(None, alias="X-OpenAI-API-Key")
+):
+    # Get API key from header (preferred) or fall back to environment variable
+    api_key = x_openai_api_key or os.getenv("OPENAI_API_KEY")
+    
+    if not api_key:
+        raise HTTPException(
+            status_code=401,
+            detail="OpenAI API key is required. Please provide it in the X-OpenAI-API-Key header."
+        )
     
     try:
+        # Create OpenAI client with the provided API key
+        client = OpenAI(api_key=api_key)
         user_message = request.message
+        
         response = client.chat.completions.create(
             model="gpt-5",
             messages=[
