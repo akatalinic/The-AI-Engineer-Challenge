@@ -36,6 +36,8 @@ export default function Home() {
     setIsLoading(true);
 
     try {
+      // Use /api/chat endpoint - Next.js will proxy to FastAPI backend in dev,
+      // or Vercel will route to FastAPI backend in production
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -45,21 +47,38 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.detail || `HTTP error! status: ${response.status}`;
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
+      
+      if (!data.reply) {
+        throw new Error('Invalid response from server: missing reply field');
+      }
+
       setMessages((prev) => [
         ...prev,
         { role: 'assistant', content: data.reply },
       ]);
     } catch (error) {
       console.error('Error:', error);
+      let errorMessage = 'Failed to connect to server.';
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        // Provide helpful context for common errors
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+          errorMessage = 'Cannot connect to backend. Make sure the FastAPI server is running on http://localhost:8000';
+        }
+      }
+      
       setMessages((prev) => [
         ...prev,
         {
           role: 'error',
-          content: `Error: ${error instanceof Error ? error.message : 'Failed to connect to server. Make sure the backend is running on http://localhost:8000'}`,
+          content: `[ERROR] ${errorMessage}`,
         },
       ]);
     } finally {

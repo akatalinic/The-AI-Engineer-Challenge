@@ -54,7 +54,10 @@ A matrix-style terminal chat interface built with Next.js, featuring an animated
 
 - The app uses Next.js 14 with the App Router
 - Hot reload is enabled during development
-- The frontend proxies API requests to `http://localhost:8000` via Next.js rewrites
+- The frontend automatically proxies API requests to the FastAPI backend:
+  - **Local development**: Next.js rewrites `/api/*` to `http://localhost:8000/api/*`
+  - **Production (Vercel)**: Vercel routes `/api/*` to the FastAPI backend via `vercel.json`
+- The frontend calls `/api/chat` which connects to the FastAPI endpoint at `POST /api/chat`
 
 ## Building for Production
 
