@@ -46,7 +46,7 @@ export default function Home() {
     setApiKeyError('');
 
     const key = apiKeyInput.trim();
-    
+
     if (!key) {
       setApiKeyError('API key is required');
       return;
@@ -117,7 +117,7 @@ export default function Home() {
       }
 
       const data = await response.json();
-      
+
       if (!data.reply) {
         throw new Error('Invalid response from server: missing reply field');
       }
@@ -129,7 +129,7 @@ export default function Home() {
     } catch (error) {
       console.error('Error:', error);
       let errorMessage = 'Failed to connect to server.';
-      
+
       if (error instanceof Error) {
         errorMessage = error.message;
         // Provide helpful context for common errors
@@ -137,7 +137,7 @@ export default function Home() {
           errorMessage = 'Cannot connect to backend. Make sure the FastAPI server is running on http://localhost:8000';
         }
       }
-      
+
       setMessages((prev) => [
         ...prev,
         {
@@ -216,7 +216,7 @@ export default function Home() {
             )}
             {message.role === 'assistant' && (
               <div className="message-bubble message-assistant-bubble">
-                <div 
+                <div
                   className="message-content"
                   dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
                 />
@@ -254,8 +254,8 @@ export default function Home() {
             disabled={isLoading}
             autoFocus
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="chat-send-button"
             disabled={isLoading || !input.trim()}
           >
