@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import MatrixRain from '@/components/MatrixRain';
+import { formatMessage } from '@/utils/messageFormatter';
 
 interface Message {
   role: 'user' | 'assistant' | 'error';
@@ -18,7 +18,7 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'System initialized. Matrix terminal ready. Type your message below...',
+      content: 'Hello. I\'m here to support you. How are you feeling today?',
     },
   ]);
   const [input, setInput] = useState('');
@@ -46,7 +46,7 @@ export default function Home() {
     setApiKeyError('');
 
     const key = apiKeyInput.trim();
-    
+
     if (!key) {
       setApiKeyError('API key is required');
       return;
@@ -72,7 +72,7 @@ export default function Home() {
     setMessages([
       {
         role: 'assistant',
-        content: 'System initialized. Matrix terminal ready. Type your message below...',
+        content: 'Hello. I\'m here to support you. How are you feeling today?',
       },
     ]);
   };
@@ -117,7 +117,7 @@ export default function Home() {
       }
 
       const data = await response.json();
-      
+
       if (!data.reply) {
         throw new Error('Invalid response from server: missing reply field');
       }
@@ -129,7 +129,7 @@ export default function Home() {
     } catch (error) {
       console.error('Error:', error);
       let errorMessage = 'Failed to connect to server.';
-      
+
       if (error instanceof Error) {
         errorMessage = error.message;
         // Provide helpful context for common errors
@@ -137,7 +137,7 @@ export default function Home() {
           errorMessage = 'Cannot connect to backend. Make sure the FastAPI server is running on http://localhost:8000';
         }
       }
-      
+
       setMessages((prev) => [
         ...prev,
         {
@@ -151,13 +151,12 @@ export default function Home() {
   };
 
   return (
-    <div className="terminal-container">
-      <MatrixRain />
+    <div className="chat-container">
       {showApiKeyModal && (
         <div className="api-key-modal">
           <div className="api-key-modal-content">
             <div className="api-key-modal-title">
-              {'>'} API KEY REQUIRED
+              API Key Required
             </div>
             <div className="api-key-modal-description">
               Enter your OpenAI API key to access the chat interface. Your key is stored locally in your browser session and is never sent to our servers except for API requests.
@@ -183,7 +182,7 @@ export default function Home() {
                   <div className="api-key-error">{apiKeyError}</div>
                 )}
                 <div className="api-key-warning">
-                  ⚠️ Your API key is stored in browser session storage and will be cleared when you close the browser.
+                  Your API key is stored in browser session storage and will be cleared when you close the browser.
                 </div>
               </div>
               <button type="submit" className="api-key-button">
@@ -193,72 +192,75 @@ export default function Home() {
           </div>
         </div>
       )}
-      <div className="terminal-header">
-        <div className="terminal-title">
-          {'>'} MATRIX TERMINAL v1.0 | AI CHAT INTERFACE
+      <div className="chat-header">
+        <div className="chat-header-content">
+          <h1 className="chat-title">Mental Health Coach</h1>
           {apiKey && (
-            <span style={{ marginLeft: '20px', fontSize: '10px', opacity: 0.7 }}>
-              [API Key: {apiKey.substring(0, 7)}...] 
-              <button
-                onClick={handleClearApiKey}
-                style={{
-                  marginLeft: '10px',
-                  background: 'transparent',
-                  border: '1px solid #00ff00',
-                  color: '#00ff00',
-                  padding: '2px 8px',
-                  cursor: 'pointer',
-                  fontSize: '10px',
-                }}
-              >
-                Clear
-              </button>
-            </span>
+            <button
+              onClick={handleClearApiKey}
+              className="clear-api-key-button"
+              title="Clear API key"
+            >
+              Settings
+            </button>
           )}
         </div>
       </div>
-      <div className="terminal-output" ref={outputRef}>
+      <div className="chat-messages" ref={outputRef}>
         {messages.map((message, index) => (
-          <div key={index} className="message">
+          <div key={index} className={`message message-${message.role}`}>
             {message.role === 'user' && (
-              <span>
-                <span className="message-prompt">{'$'}</span>
-                <span className="message-user">{message.content}</span>
-              </span>
+              <div className="message-bubble message-user-bubble">
+                <div className="message-content">{message.content}</div>
+              </div>
             )}
             {message.role === 'assistant' && (
-              <span>
-                <span className="message-prompt">{'>'}</span>
-                <span className="message-assistant">{message.content}</span>
-              </span>
+              <div className="message-bubble message-assistant-bubble">
+                <div
+                  className="message-content"
+                  dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
+                />
+              </div>
             )}
             {message.role === 'error' && (
-              <span>
-                <span className="message-prompt">{'[ERROR]'}</span>
-                <span className="message-error">{message.content}</span>
-              </span>
+              <div className="message-bubble message-error-bubble">
+                <div className="message-content">{message.content}</div>
+              </div>
             )}
           </div>
         ))}
         {isLoading && (
-          <div className="message">
-            <span className="message-prompt">{'>'}</span>
-            <span className="message-assistant loading">Processing</span>
+          <div className="message message-assistant">
+            <div className="message-bubble message-assistant-bubble">
+              <div className="message-content loading">
+                <span className="loading-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </span>
+              </div>
+            </div>
           </div>
         )}
       </div>
-      <div className="terminal-input-area">
-        <form onSubmit={handleSubmit} className="input-container">
-          <span className="input-prompt">{'$'}</span>
+      <div className="chat-input-area">
+        <form onSubmit={handleSubmit} className="chat-input-form">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="terminal-input"
-            placeholder="Enter your message..."
+            className="chat-input"
+            placeholder="Type your message..."
             disabled={isLoading}
             autoFocus
           />
+          <button
+            type="submit"
+            className="chat-send-button"
+            disabled={isLoading || !input.trim()}
+          >
+            Send
+          </button>
         </form>
       </div>
     </div>
