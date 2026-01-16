@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Matrix Terminal Chat',
-  description: 'A matrix-style terminal chat interface',
+  title: 'Personalized Mental Health Chat',
+  description: 'Speak with your personalized mental health coach',
 };
 
 export default function RootLayout({
