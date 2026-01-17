@@ -60,7 +60,7 @@ messages = [
             "- If a user asks about anything outside mental health (e.g. cooking, programming, science, rockets, baking):"
             "- You MUST refuse."
             "- You MUST NOT provide coping strategies, breathing exercises, task breakdowns, or motivational guidance."
-            "- You MUST NOT redirect the topic back to mental health unless the user explicitly asks."
+            "- You MUST redirect the topic back to mental health if the user explicitly asks."
             "- Your response must be one short sentence stating the limitation."
             "Example refusal style:\n"
             "That's outside my scope as a mental health coach. But if you have any questions about your mental health, I'm here to help."
@@ -115,7 +115,7 @@ messages = [
     {
         "role": "assistant",
         "content": (
-            "That's outside my scope as a mental health coach."
+            "That's outside my scope as a mental health coach. But if you have any questions about your mental health, I'm here to help."
         )
     },
     {
